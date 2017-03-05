@@ -16,8 +16,8 @@ void forwardDistance(){
    * how fast it will move. 
    */
   //********************** CONSTANTS ***************************************
-  int nextObject = photonSensor;
-  int closeDistance = 500; //what is this?
+  int nextObject = proximitySensor;
+  int closeDistance = 250; //approximate proximity sensor value at 1 foot
   
   //********************** MAIN OPERATION **********************************
   // call motion module functions with step value
@@ -66,15 +66,27 @@ void findLight() {
    */
  //********************** CONSTANTS ***************************************
   int brightLight; // assign value after determining it emperically
+  int foundLight; //min signal value for detecting light
+  int tolerance; //error for detecting same signal from both sensors
+  int signalDifference = photonSensorL - photonSensorR; //difference between right and left photosensor signal
+  
 
  //********************** MAIN OPERATION **********************************
-  while(photonSensor < brightLight){
-    rightSlow(rotationSpeed);
-  }
-  while(photonSensor >= brightLight){
-    forwardDistance();
-    if(proximitySensor > tooClose){
-      break;
-    };
-  };
+ //rotate until light is initially found
+ if(photonSensorR < foundLight) {
+  tRight();
+ }
+ void loop() {
+ //adjust direction toward light
+   while(abs(signalDifference) > tolerance) {
+    if(signalDifference > tolerance){
+     tLeft();
+    }
+    if(signalDifference < tolerance){
+     tRight();
+    }
+   }
+   forwardDistance();
+ }
+ 
 }
