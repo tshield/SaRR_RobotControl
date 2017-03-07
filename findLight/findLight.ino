@@ -17,7 +17,7 @@ void forwardDistance(){
    */
   //********************** CONSTANTS ***************************************
   int nextObject = proximitySensor;
-  int closeDistance = 100; //approximate proximity sensor value at 1 foot
+  int closeDistance = 200; //approximate proximity sensor value at 1 foot
   
   //********************** MAIN OPERATION **********************************
   // call motion module functions with step value
@@ -47,6 +47,32 @@ void forwardDistance(){
   }
 }
 
+void driveStraight(){
+
+  int tolerance = 40;
+  int slow = 150; //1500 +/- value = speed
+
+  while(nextObject < closeDistance){
+    if(signalDifference < tolerance) {
+      driveForward(100,slow);
+    }
+    else{
+      return;
+    }
+  }
+  
+  
+}
+
+void driveForward(int ms,int velocity){
+
+  Lwheel = 1500 + velocity; //change plus/minus based on motor orientation
+  Rwheel = 1500 - velocity;
+  pulseMotors();
+  delay(ms);
+  
+}
+
 void tLeft(){
   Lwheel = left_forward_slow;
   Rwheel = right_backward_slow;
@@ -54,6 +80,7 @@ void tLeft(){
   delay(1000)
   Lwheel = left_stop;
   Rwheel = right_stop;
+  pulseMotors();
 }
 
 void tRight(){
@@ -63,6 +90,7 @@ void tRight(){
   delay(1000)
   Lwheel = left_stop;
   Rwheel = right_stop;
+  pulseMotors();
 }
 
 void findLight() {
@@ -72,14 +100,16 @@ void findLight() {
    */
  //********************** CONSTANTS ***************************************
   //int brightLight; // assign value after determining it emperically
-  int foundLight; //min signal value for detecting light
-  int tolerance = 10; //error for detecting same signal from both sensors
+  int foundLight = 300; //min signal value for detecting light
+  int tolerance = 40; //error for detecting same signal from both sensors
   int signalDifference = photonSensorL - photonSensorR; //difference between right and left photosensor signal
+  int nextObject = proximitySensor;
+  int closeDistance = 200;
   
 
  //********************** MAIN OPERATION **********************************
  //rotate until light is initially found
- while(photonSensorR < foundLight) {
+ while(abs(signalDifference) < foundLight) {
   tRight();
  }
  void loop() {
@@ -92,7 +122,10 @@ void findLight() {
      tRight();
     }
    }
-   forwardDistance();
+   if(nextObject < closeDistance){
+    driveStraight();
+   }
+   else break;
  }
  
 }

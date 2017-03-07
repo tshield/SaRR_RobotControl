@@ -83,8 +83,8 @@ for(int i = 0; i <= 3; i++){
 
 void loop() {
   // capture sensor input
-  photonSensor1 = pulseIn(5, HIGH, 21000);
-  photonSensor2 = pulseIn(6, HIGH, 21000);
+  photonSensorL = pulseIn(5, HIGH, 21000);
+  photonSensorR = pulseIn(6, HIGH, 21000);
 //  proximitySensor = ;
   // Capture PWM of remote control:
   ch1 = pulseIn(7, HIGH, 21000); // Capture pulse width on Channel 1
